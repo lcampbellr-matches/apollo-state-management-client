@@ -33,6 +33,24 @@
   margin: 0 0 10px 0;
 }
 
+.approved {
+  background-color: lightgreen;
+  width: 15px;
+  height: 15px;
+  border-radius: 17px;
+  float: right;
+  margin: 4px 0 0 10px;
+}
+
+.unapproved {
+  background-color: red;
+  width: 15px;
+  height: 15px;
+  border-radius: 17px;
+  float: right;
+  margin: 4px 0 0 10px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

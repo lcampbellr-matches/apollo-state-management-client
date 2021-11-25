@@ -52,6 +52,7 @@ export const UpdateUsersOptions = {
       favouriteMovie: {
         title: updatedUser.favouriteMovie.title,
       },
+      approval: false,
     };
 
     const writeUsers = [...existingsUsers.users];
@@ -76,6 +77,7 @@ query GetUsers {
     favouriteMovie {
       title
     }
+    approval
   }
 }
 `;
