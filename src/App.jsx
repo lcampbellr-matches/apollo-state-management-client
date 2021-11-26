@@ -7,23 +7,25 @@ import {
   useQuery,
   useMutation,
 } from "@apollo/client";
-import React, { useContext, useEffect } from 'react';
-import { GET_BOOKS, GET_MOVIES, GET_USERS, UPDATE_USERS, UpdateUsersOptions } from "./queries_mutations";
+import React, { useContext } from 'react';
+import { GET_BOOKS, GET_MOVIES, GET_USERS, UPDATE_USERS, updateUsersOptions, getUsersOptions } from "./queries_mutations";
 import { AppContext } from '.';
 import { AutoCompleteComp } from './components/Autocomplete';
+import { UserListItem } from './components/UsersListItem';
+
+const pollUntilAllApproved = (users = [], start, stop) => {
+  start(1000);
+  if (users.every(user => user.approval)) stop();
+};
 
 const App = () => {
   const { loading: loadingBooks, error: errorBooks, data: booksData } = useQuery(GET_BOOKS);
   const { loading: loadingMovies, error: errorMovies, data: moviesData } = useQuery(GET_MOVIES);
-  const { loading: loadingUsers, error: errorUsers, data: usersData, startPolling, stopPolling } = useQuery(GET_USERS,
-    {
-      pollInterval: 5000,
-    });
-  const [updateUsers] = useMutation(UPDATE_USERS, UpdateUsersOptions);
+  const { loading: loadingUsers, error: errorUsers, data: usersData, startPolling, stopPolling } = useQuery(GET_USERS, getUsersOptions);
+  const [updateUsers] = useMutation(UPDATE_USERS, updateUsersOptions);
   const localState = useContext(AppContext);
 
-  startPolling(1000);
-  if (usersData?.users.every(user => user.approval)) stopPolling();
+  pollUntilAllApproved(usersData?.users, startPolling, stopPolling);
 
 
   if (loadingBooks || loadingMovies || loadingUsers) return <p>Loading...</p>;
@@ -57,7 +59,9 @@ const App = () => {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
           { 
-            users.map(({title, favouriteBook, favouriteMovie, approval}) => <div key={title}>{title} likes the book "{favouriteBook.title}" and the movie "{favouriteMovie.title}"<div className={clsx({ approved:approval, unapproved:!approval, })}></div></div>)
+            users.map(({title, favouriteBook, favouriteMovie, approval}) => {
+              return <UserListItem key={title} title={title} favouriteBookTitle={favouriteBook.title} favouriteMovieTitle={favouriteMovie.title} approval={approval}  />
+            })
           }
           <h2>Users</h2>
           <AutoCompleteComp stateName="user" options={users} />

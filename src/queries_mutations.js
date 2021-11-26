@@ -34,7 +34,7 @@ mutation  UpdateUsers ($input: UpdateInput) {
 }
 `;
 
-export const UpdateUsersOptions = {
+export const updateUsersOptions = {
   update(cache, { data }){
     const existingsUsers = cache.readQuery({
       query: GET_USERS,
@@ -81,3 +81,5 @@ query GetUsers {
   }
 }
 `;
+
+export const getUsersOptions = { pollInterval: 5000 };
